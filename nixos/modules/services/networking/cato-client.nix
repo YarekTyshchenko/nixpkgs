@@ -16,15 +16,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    #users.users = {
-    #  cato-client = {
-    #    isSystemUser = true;
-    #    group = "cato-client";
-    #    description = "Cato Client daemon user";
-    #  };
-    #};
-    users.groups = {
-      cato-client = { };
+    users = {
+      groups.cato-client = { };
     };
 
     systemd.services.cato-client = {
@@ -34,8 +27,7 @@ in
 
       serviceConfig = {
         Type = "simple";
-        #User = "cato-client";
-        User = "root";
+        User = "root"; # Note: daemon runs as root, tools sticky to group
         Group = "cato-client";
         ExecStart = "${cfg.package}/bin/cato-clientd systemd";
         WorkingDirectory = "${cfg.package}";
@@ -43,6 +35,23 @@ in
       };
 
       wantedBy = [ "multi-user.target" ];
+    };
+
+    # set up Security wrapper Same as inteded in deb post install
+    security.wrappers.cato-clientd = {
+      source = "${cfg.package}/bin/cato-clientd";
+      owner = "root";
+      group = "cato-client";
+      permissions = "u+rwx,g+rwx"; # 770
+      setgid = true;
+    };
+
+    security.wrappers.cato-sdp = {
+      source = "${cfg.package}/bin/cato-sdp";
+      owner = "root";
+      group = "cato-client";
+      permissions = "u+rwx,g+rx,a+rx"; # 755
+      setgid = true;
     };
   };
 }
