@@ -36,6 +36,20 @@ in
         ExecStart = "${cfg.package}/bin/cato-clientd systemd";
         WorkingDirectory = "${cfg.package}";
         Restart = "always";
+
+        # Cato client seems to do the following:
+        # - Look in each user's ~/.cato/ for configuration and keys
+        # - Write to /var/log/cato-client.log
+        # - Create and use sockets /var/run/cato-sdp.i, /var/run/cato-sdp.o
+        # - Read and Write to /opt/cato/ for runtime settings
+        # - Read /etc/systemd/resolved.conf (but fine if fails)
+        # - Restart systemd-resolved (also fine if doesn't exist)
+
+        NoNewPrivileges = true;
+        PrivateTmp = true;
+        ProtectKernelTunables = true;
+        ProtectControlGroups = true;
+        ProtectSystem = true;
       };
 
       wantedBy = [ "multi-user.target" ];
