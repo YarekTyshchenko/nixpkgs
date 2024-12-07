@@ -57,7 +57,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = {
-    description = "Cato Client is a lightweight agent that provides secure zero-trust access to resources everywhere";
+    description = "Lightweight agent that provides secure zero-trust access to resources everywhere";
     homepage = "https://www.catonetworks.com/platform/cato-client/";
     mainProgram = "cato-sdp";
     license = lib.licenses.unfree;
