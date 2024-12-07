@@ -1,10 +1,12 @@
 {
-  config,
-  pkgs,
+  stdenv,
+  fetchurl,
+  writeScript,
+  autoPatchelfHook,
+  dpkg,
+  libz,
   lib,
-  ...
 }:
-with pkgs;
 stdenv.mkDerivation rec {
   pname = "cato-client";
   version = "5.2.1.1";
